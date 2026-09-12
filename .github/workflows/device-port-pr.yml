@@ -368,7 +368,7 @@ jobs:
             kmi_asset="${KERNELSU_DDK_KMI_ASSET:-android15-6.6_kernelsu.ko}"
             echo "Building KernelSU module for release: $release (kmi asset: $kmi_asset)"
             git clone --depth 1 --branch v3.2.5 https://github.com/tiann/KernelSU.git ".work/kernelsu-src"
-            git -C ".work/kernelsu-src" apply ../payloads/kernelsu/patches/KernelSU-v3.2.5-samsung-kdp-rkp-defex.patch
+            git -C ".work/kernelsu-src" apply "$GITHUB_WORKSPACE/payloads/kernelsu/patches/KernelSU-v3.2.5-samsung-kdp-rkp-defex.patch"
             docker run --rm \
               -v "$PWD/.work/kernelsu-src:/workspace" \
               -w /workspace/kernel \
