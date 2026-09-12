@@ -380,7 +380,7 @@ jobs:
                 sed -i "s|$default_release|$KSU_RELEASE|g" \
                   "$KDIR/include/generated/utsrelease.h" \
                   "$KDIR/include/config/kernel.release"
-                make clean
+                make clean || true
                 CONFIG_KSU=m \
                 CONFIG_KSU_SAMSUNG_KDP=y \
                 CONFIG_KSU_SAMSUNG_RKP=y \
