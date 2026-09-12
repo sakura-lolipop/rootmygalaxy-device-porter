@@ -1472,6 +1472,21 @@ def cmd_gen_target_h(args: argparse.Namespace) -> int:
     # keep the template's line endings so a re-derivation of an existing header
     # produces no whole-file EOL diff against the committed CRLF files
     out_text = text.replace("\n", "\r\n") if template_crlf else text
+    # Reconcile: keep every #define that exists in the template but is absent
+    # from the derived output. Derivation rewrites value-bearing macros in
+    # place but can drop descriptive alias blocks (for example
+    # SLIDE_NFULNL_LOGGER_NAME_IMAGE) that the shared source references; those
+    # aliases carry no per-build values of their own, so restoring them
+    # verbatim is value-safe.
+    def _logical_defines(t: str) -> dict:
+        found: dict = {}
+        for _m in re.finditer(r"(?m)^[ \t]*#define[ \t]+([A-Z][A-Z0-9_]+)[ \t]*((?:[^\\\n]|\\\n)*)", t):
+            found.setdefault(_m.group(1), _m.group(2).replace("\\\n", " ").strip())
+        return found
+    for _name, _value in _logical_defines(text).items():
+        if _name not in _logical_defines(out_text):
+            out_text = add_define_before_endif(out_text, _name, _value)
+            report.append(f"- [SCAFFOLD] {_name} restored from template (dropped by derivation)")
     out.write_text(out_text, encoding="utf-8", newline="")
     report_path = args.report or (args.target_dir / "port-report.md")
     report_path.write_text("\n".join(report) + "\n", encoding="utf-8")
