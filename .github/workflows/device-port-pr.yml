@@ -410,7 +410,7 @@ jobs:
             export CC_aarch64_linux_android="$ndk_bin/aarch64-linux-android35-clang"
             export AR_aarch64_linux_android="$ndk_bin/llvm-ar"
             export PATH="$ndk_bin:$PATH"
-            (cd ".work/kernelsu-src/userspace/ksud" && cargo build --release --target aarch64-linux-android --target-dir "$GITHUB_WORKSPACE/.work/kernelsu-src/userspace/ksud/target")
+            (cd ".work/kernelsu-src/userspace/ksud" && cargo build --release --target aarch64-linux-android --target-dir "$PWD/target")
             ksud_bin=".work/kernelsu-src/userspace/ksud/target/aarch64-linux-android/release/ksud"
             test -f "$ksud_bin"
             mkdir -p ../payloads/kernelsu
